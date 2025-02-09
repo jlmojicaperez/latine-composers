@@ -1,0 +1,44 @@
+{% extends 'base.html'%}
+{% block head %}
+    <title> {{ composer.name }} | Latine Composers</title>
+{% endblock %}
+{%block body%}
+
+    <div class="profile-card">
+        <img src="{{ url_for('static', filename=composer.image) }}" alt="{{ composer.name }} Photo">
+        <h2>{{ composer.name }}</h2>
+        <div class="details">
+            <p class="section-title">Details</p>
+            <p><strong>Country of Birth:</strong> {{ composer.country_of_birth }}</p>
+            <p><strong>Ethnicity:</strong> {{ composer.ethnicity }}</p>
+            <p><strong>Born:</strong> {{ composer.birth_date }}</p>
+            <p><strong>Died:</strong> {{ composer.death_date }}</p>
+            <p><strong>Sex:</strong> {{ composer.sex }}</p>
+            <p><strong>Country of Education:</strong> {{ composer.country_of_education }}</p>
+        </div>
+
+        <div class="genres">
+            <p class="section-title">Genres</p>
+            {% for genre in composer.genres %}
+            <span class="genre">{{ genre }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="sample">
+            <p class="section-title">Sample</p>
+            <a href="{{ composer.sample_link }}" target="_blank">{{composer.sample_title}}</a>
+        </div>
+
+        <div class="contact-info">
+            <p class="section-title">Contact Information</p>
+            <p><strong>Website:</strong> <a href="{{ composer.website }}">{{ composer.website }}</a></p>
+            <p><strong>Email:</strong> <a href="mailto:{{ composer.email }}">{{ composer.email }}</a></p>
+        </div>
+
+        <div class="more-info">
+            <p class="section-title">More Information</p>
+            <p>{{ composer.more_info }}</p>
+        </div>
+    </div>
+
+{% endblock %}
