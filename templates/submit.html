@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block head %}
+    <title> Submit a new composer | Latine Composers</title>
+{% endblock %}
+{% block body %}
+<form action="/submit" method="POST">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Composer's Name" required>
+    </div>
+    <div>
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" name="image" placeholder="URL of Composer's Image">
+    </div>
+    <div>
+        <label for="country_of_birth">Country of Birth:</label>
+        <input type="text" id="country_of_birth" name="country_of_birth" placeholder="Country of Birth">
+    </div>
+    <div>
+        <label for="ethnicity">Ethnicity:</label>
+        <input type="text" id="ethnicity" name="ethnicity" placeholder="Ethnicity">
+    </div>
+    <div>
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" id="birth_date" name="birth_date">
+    </div>
+    <div>
+        <label for="death_date">Death Date:</label>
+        <input type="date" id="death_date" name="death_date">
+    </div>
+    <div>
+        <label for="sex">Sex:</label>
+        <input type="text" id="sex" name="sex" placeholder="Sex">
+    </div>
+    <div>
+        <label for="country_of_education">Country of Education:</label>
+        <input type="text" id="country_of_education" name="country_of_education" placeholder="Country of Education">
+    </div>
+    <div>
+        <label for="genres">Genres:</label>
+        <input type="text" id="genres" name="genres" placeholder="Genres">
+    </div>
+    <div>
+        <label for="sample_link">Sample Link:</label>
+        <input type="url" id="sample_link" name="sample_link" placeholder="Link to a sample of their music">
+    </div>
+    <div>
+        <label for="sample_title">Sample Title:</label>
+        <input type="text" id="sample_title" name="sample_title" placeholder="Title of the music sample">
+    </div>
+    <div>
+        <label for="website">Website:</label>
+        <input type="url" id="website" name="website" placeholder="Composer's Website">
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Composer's Email">
+    </div>
+    <div>
+        <label for="more_info">More Info:</label>
+        <input type="text" id="more_info" name="more_info" placeholder="Link for more information">
+    </div>
+    <div>
+        <button type="submit">Submit Composer</button>
+    </div>
+</form>
+{% endblock %}
