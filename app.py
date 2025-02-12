@@ -1,6 +1,8 @@
 # imports
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String
 
 # test data
 composers_db = {
@@ -23,20 +25,47 @@ composers_db = {
     # ... more composers ...
 }
 
-# app 
-app = Flask(__name__)
 
-# TODO: SQLAlchemy Extension
+class Base(DeclarativeBase):
+  pass
+
+db = SQLAlchemy(model_class=Base)
+
+# Create app
+app = Flask(__name__)
+# configure SQLite database relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-db = SQLAlchemy(app)
+# initialize app with the extension
+db.init_app(app) 
+
+class Composer(db.Model):
+    composer_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    image = db.Column(db.String(200))
+    country_of_birth = db.Column(db.String(50))
+    ethnicity = db.Column(db.String(50))
+    birth_date = db.Column(db.DateTime)
+    death_date = db.Column(db.DateTime)
+    sex = db.Column(db.String(20))
+    country_of_education = db.Column(db.String(20))
+    genres = db.Column(db.String(20))
+    sample_link = db.Column(db.String(200))
+    sample_title = db.Column(db.String(100))
+    website = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    more_info = db.Column(db.String(100))
+
+    def __repr__(self):
+        return f"Composer: {self.name}, ID: {self.composer_id}"
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 @app.route("/composers")
 def composers():
+    db.session.get(Composer)
     return render_template("composers.html")
-
 
 @app.route("/profile/<composer_id>")
 def profile(composer_id):
@@ -44,5 +73,44 @@ def profile(composer_id):
     composer_data = composers_db.get(composer_id)
     return render_template("profile.html", composer=composer_data)
 
+
+# TODO: WRITE TO DATABASE NOT WORKING. DATES ARE THE PROBLEM
+@app.route("/submit", methods=["POST", "GET"])
+def submit():
+    # add composer
+    if request.method == "POST":
+        print(request.form)
+        composer = Composer(
+            name = request.form["name"],
+            image = request.form["image"],
+            country_of_birth = request.form["country_of_birth"],
+            ethnicity = request.form["ethnicity"],
+            birth_date = request.form["birth_date"],
+            death_date = request.form["death_date"],
+            sex = request.form["sex"],
+            country_of_education = request.form["country_of_education"],
+            genres = request.form["genres"],
+            sample_link = request.form["sample_link"],
+            sample_title = request.form["sample_title"],
+            website = request.form["website"],
+            email = request.form["email"],
+            more_info = request.form["more_info"],
+
+        )
+        print(composer)
+        try:
+            db.session.add(composer)
+            db.session.commit()
+            return redirect("/submit")
+        except Exception as e:
+            print(f"ERROR {e}")
+            return f"ERROR {e}"
+    elif request.method == "GET":
+        return render_template("submit.html")
+
+
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+
     app.run(debug=True)
