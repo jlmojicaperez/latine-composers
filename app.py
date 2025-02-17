@@ -3,6 +3,7 @@ from flask import Flask, render_template, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
+from datetime import datetime
 
 # test data
 composers_db = {
@@ -59,55 +60,60 @@ class Composer(db.Model):
         return f"Composer: {self.name}, ID: {self.composer_id}"
 
 
-@app.route("/")
+@app.get("/")
 def index():
     return render_template("index.html")
-@app.route("/composers")
-def composers():
-    db.session.get(Composer)
-    return render_template("composers.html")
 
-@app.route("/profile/<composer_id>")
+@app.get("/about")
+def about():
+    return render_template("about.html")
+
+@app.get("/composers")
+def composers():
+    try:
+        composers = Composer.query.order_by(Composer.name).all()
+        return render_template("composers.html", composers=composers)
+    except Exception as e:
+        return f"ERROR {e}"
+
+@app.get("/profile/<int:composer_id>")
 def profile(composer_id):
     # fetch data from the database
-    composer_data = composers_db.get(composer_id)
-    return render_template("profile.html", composer=composer_data)
+    composer = Composer.query.get(composer_id)
+    return render_template("profile.html", composer=composer)
 
+@app.get("/create")
+def create_get():
+    return render_template("create.html")
 
-# TODO: WRITE TO DATABASE NOT WORKING. DATES ARE THE PROBLEM
-@app.route("/submit", methods=["POST", "GET"])
-def submit():
+@app.post("/create")
+def create_post():
     # add composer
-    if request.method == "POST":
-        print(request.form)
-        composer = Composer(
-            name = request.form["name"],
-            image = request.form["image"],
-            country_of_birth = request.form["country_of_birth"],
-            ethnicity = request.form["ethnicity"],
-            birth_date = request.form["birth_date"],
-            death_date = request.form["death_date"],
-            sex = request.form["sex"],
-            country_of_education = request.form["country_of_education"],
-            genres = request.form["genres"],
-            sample_link = request.form["sample_link"],
-            sample_title = request.form["sample_title"],
-            website = request.form["website"],
-            email = request.form["email"],
-            more_info = request.form["more_info"],
-
-        )
-        print(composer)
-        try:
-            db.session.add(composer)
-            db.session.commit()
-            return redirect("/submit")
-        except Exception as e:
-            print(f"ERROR {e}")
-            return f"ERROR {e}"
-    elif request.method == "GET":
-        return render_template("submit.html")
-
+    composer = Composer(
+        name = request.form["name"],
+        image = request.form["image"],
+        country_of_birth = request.form["country_of_birth"],
+        ethnicity = request.form["ethnicity"],
+        birth_date = datetime.strptime(request.form["birth_date"], "%Y-%m-%d"),
+        death_date = datetime.strptime(request.form["death_date"], "%Y-%m-%d"),
+        sex = request.form["sex"],
+        country_of_education = request.form["country_of_education"],
+        # TODO: Find way to make genres a list of values
+        genres = request.form["genres"],
+        sample_link = request.form["sample_link"],
+        sample_title = request.form["sample_title"],
+        website = request.form["website"],
+        email = request.form["email"],
+        more_info = request.form["more_info"],
+    )
+    print(type(composer.birth_date))
+    try:
+        db.session.add(composer)
+        db.session.commit()
+        return redirect("/create")
+    except Exception as e:
+        print(f"ERROR {e}")
+        return f"ERROR {e}"
 
 if __name__ == "__main__":
     with app.app_context():
