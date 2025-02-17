@@ -11,8 +11,8 @@
             <p class="section-title">Details</p>
             <p><strong>Country of Birth:</strong> {{ composer.country_of_birth }}</p>
             <p><strong>Ethnicity:</strong> {{ composer.ethnicity }}</p>
-            <p><strong>Born:</strong> {{ composer.birth_date }}</p>
-            <p><strong>Died:</strong> {{ composer.death_date }}</p>
+            <p><strong>Born:</strong> {{ composer.birth_date.strftime("%Y-%m-%d") }}</p>
+            <p><strong>Died:</strong> {{ composer.death_date.strftime("%Y-%m-%d") }}</p>
             <p><strong>Sex:</strong> {{ composer.sex }}</p>
             <p><strong>Country of Education:</strong> {{ composer.country_of_education }}</p>
         </div>
