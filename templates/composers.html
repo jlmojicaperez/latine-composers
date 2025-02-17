@@ -4,22 +4,15 @@
 {% endblock %}
 {% block body %}
     <h1>Composers</h1>
-
+    {% if composers | length < 1 %}
+        <h3>There are no composers :\<h3>
+    {% else %}
     <ul class="composer-list">
-        <li class="composer-item">
-            <a href="{{ url_for('profile', composer_id='beethoven') }}" class="composer-link">Ludwig van Beethoven</a>
-        </li>
-        <li class="composer-item">
-            <a href="{{ url_for('profile', composer_id='mozart') }}" class="composer-link">Wolfgang Amadeus Mozart</a>
-        </li>
-        <li class="composer-item">
-            <a href="{{ url_for('profile', composer_id='bach') }}" class="composer-link">Johann Sebastian Bach</a>
-        </li>
-        <li class="composer-item">
-            <a href="{{ url_for('profile', composer_id='chopin') }}" class="composer-link">Frédéric Chopin</a>
-        </li>
-        <li class="composer-item">
-            <a href="{{ url_for('profile', composer_id='debussy') }}" class="composer-link">Claude Debussy</a>
-        </li>
+        {% for composer in composers %}
+            <li class="composer-item">
+                <a href="{{ url_for('profile', composer_id=composer.composer_id) }}" class="composer-link">{{composer.name}}</a>
+            </li>
+        {% endfor %}
     </ul>
+    {% endif %}
 {% endblock %}
