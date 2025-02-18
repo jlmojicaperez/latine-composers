@@ -4,11 +4,11 @@
 {% endblock %}
 {% block body %}
     <h1>Composers</h1>
-    {% if composers | length < 1 %}
+    {% if composers_list | length < 1 %}
         <h3>There are no composers :\<h3>
     {% else %}
     <ul class="composer-list">
-        {% for composer in composers %}
+        {% for composer in composers_list %}
             <li class="composer-item">
                 <a href="{{ url_for('profile', composer_id=composer.composer_id) }}" class="composer-link">{{composer.name}}</a>
             </li>

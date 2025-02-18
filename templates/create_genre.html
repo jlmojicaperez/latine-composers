@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block head %}
+    <title> Submit a new composer | Latine Composers</title>
+{% endblock %}
+{% block body %}
+<form action="/create_genre" method="POST">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Genre's Name" required>
+    </div>
+    <div>
+        <label for="description">More Info:</label>
+        <input type="text" id="description" name="description" placeholder="Briefly describe the genre (300 character limit)">
+    </div>
+    <div>
+        <button type="submit">Submit Genre</button>
+    </div>
+</form>
+{% endblock %}

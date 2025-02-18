@@ -3,7 +3,7 @@
     <title> Submit a new composer | Latine Composers</title>
 {% endblock %}
 {% block body %}
-<form action="/create" method="POST">
+<form action="/create_composer" method="POST">
     <div>
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" placeholder="Composer's Name" required>
@@ -38,7 +38,12 @@
     </div>
     <div>
         <label for="genres">Genres:</label>
-        <input type="text" id="genres" name="genres" placeholder="Genres">
+        <input type="text" id="genres_input" name="genres_input" placeholder="Type a genre...">
+        <select id="genres" name="genres">
+            {% for genre in genres%}
+                <option value="genre.genre_id"> {{ genre.name }} </option>
+            {% endfor %}
+        </select>
     </div>
     <div>
         <label for="sample_link">Sample Link:</label>

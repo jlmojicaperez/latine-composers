@@ -1,0 +1,18 @@
+{%extends "base.html" %}
+{% block head %}
+    <title> Composers | Latine Composers</title>
+{% endblock %}
+{% block body %}
+    <h1>Genres</h1>
+    {% if genres_list | length < 1 %}
+        <h3>There are no genres :\<h3>
+    {% else %}
+    <ul class="genre-list">
+        {% for genre in genres_list %}
+            <li class="genre-item">
+                <a href="#" class="genre-link">{{genre.name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}

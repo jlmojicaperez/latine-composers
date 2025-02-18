@@ -5,41 +5,41 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 from datetime import datetime
 
-# test data
-composers_db = {
-    "beethoven": {
-        "name": "Ludwig van Beethoven",
-        "image": "images/beethoven.jpg",  
-        "country_of_birth": "Germany",
-        "ethnicity": "German",
-        "birth_date": "December 1770",
-        "death_date": "March 26, 1827",
-        "sex": "Male",
-        "country_of_education": "Austria",
-        "genres": ["Classical", "Symphony", "Piano Concerto"],
-        "sample_link": "https://youtu.be/3ug835LFixU?si=Rt6sTrIH9skXGE0C",
-        "sample_title": "Beethoven: Symphony No. 5 | Herbert Blomstedt and the Gewandhausorchester Leipzig",
-        "website": "https://www.example.com/beethoven",
-        "email": "beethoven@example.com",
-        "more_info": "A great composer..."
-    },
-    # ... more composers ...
-}
-
-
-class Base(DeclarativeBase):
-  pass
-
-db = SQLAlchemy(model_class=Base)
+# class Base(DeclarativeBase):
+#   pass
+# 
+# db = SQLAlchemy(model_class=Base)
 
 # Create app
 app = Flask(__name__)
 # configure SQLite database relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 # initialize app with the extension
-db.init_app(app) 
+#db.init_app(app)
+#db = SQLAlchemy(model_class=Base)
+db = SQLAlchemy(app)
+
+composer_genre_association = db.Table(
+    'composer_genre_association',
+    db.Column('genre_id', db.Integer, db.ForeignKey('genre.genre_id'), primary_key=True),
+    db.Column('composer_id', db.Integer, db.ForeignKey('composer.composer_id'), primary_key=True)
+)
+
+class Genre(db.Model):
+    __tablename__ = "genre"
+
+    genre_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    description = db.Column(db.String(300))
+    composers = db.relationship("Composer", secondary=composer_genre_association,
+                                backref=db.backref("genres", lazy="dynamic"))
+
+    def __repr__(self):
+        return f"Genre Name: {self.name}, ID: {self.genre_id}.\nDescription: {self.description}"
 
 class Composer(db.Model):
+    __tablename__ = "composer"
+
     composer_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     image = db.Column(db.String(200))
@@ -49,7 +49,6 @@ class Composer(db.Model):
     death_date = db.Column(db.DateTime)
     sex = db.Column(db.String(20))
     country_of_education = db.Column(db.String(20))
-    genres = db.Column(db.String(20))
     sample_link = db.Column(db.String(200))
     sample_title = db.Column(db.String(100))
     website = db.Column(db.String(100))
@@ -71,23 +70,56 @@ def about():
 @app.get("/composers")
 def composers():
     try:
-        composers = Composer.query.order_by(Composer.name).all()
-        return render_template("composers.html", composers=composers)
+        composers_list = Composer.query.order_by(Composer.name).all()
+        print(composers_list)
+        return render_template("composers.html", composers_list=composers_list)
     except Exception as e:
         return f"ERROR {e}"
 
+@app.get("/genres")
+def genres():
+    try:
+        genres_list = Genre.query.order_by(Genre.name).all()
+        print(genres_list)
+        return render_template("genres.html", genres_list=genres_list)
+    except Exception as e:
+        return f"ERROR {e}"
+
+# TODO: make a route and template to show the genre details
+
 @app.get("/profile/<int:composer_id>")
 def profile(composer_id):
-    # fetch data from the database
     composer = Composer.query.get(composer_id)
     return render_template("profile.html", composer=composer)
 
-@app.get("/create")
-def create_get():
-    return render_template("create.html")
+@app.post("/create_genre")
+def create_genre_post():
+    genre = Genre(
+        name = request.form["name"],
+        description = request.form["description"],
+    )
+    print(genre)
+    try:
+        db.session.add(genre)
+        db.session.commit()
+        return redirect("/create_genre")
+    except Exception as e:
+        return f"ERROR {e}"
 
-@app.post("/create")
-def create_post():
+@app.get("/create_genre")
+def create_genre_get():
+    return render_template("create_genre.html")
+
+
+@app.get("/create_composer")
+def create_composer_get():
+    genres = Genre.query.order_by(Genre.name)
+    return render_template("create_composer.html", genres=genres)
+
+
+
+@app.post("/create_composer")
+def create_composer_post():
     # add composer
     composer = Composer(
         name = request.form["name"],
@@ -98,7 +130,7 @@ def create_post():
         death_date = datetime.strptime(request.form["death_date"], "%Y-%m-%d"),
         sex = request.form["sex"],
         country_of_education = request.form["country_of_education"],
-        # TODO: Find way to make genres a list of values
+        # TODO: Fix the way genre's are added to a composer
         genres = request.form["genres"],
         sample_link = request.form["sample_link"],
         sample_title = request.form["sample_title"],
@@ -106,11 +138,10 @@ def create_post():
         email = request.form["email"],
         more_info = request.form["more_info"],
     )
-    print(type(composer.birth_date))
     try:
         db.session.add(composer)
         db.session.commit()
-        return redirect("/create")
+        return redirect("/create_composer")
     except Exception as e:
         print(f"ERROR {e}")
         return f"ERROR {e}"
