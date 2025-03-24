@@ -5,8 +5,12 @@
 {% block body %}
 <form action="/create_composer" method="POST">
     <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" placeholder="Composer's Name" required>
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" placeholder="Composer's First Name" required>
+    </div>
+    <div>
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" placeholder="Composer's Last Name" required>
     </div>
     <div>
         <label for="image">Image URL:</label>
@@ -38,10 +42,9 @@
     </div>
     <div>
         <label for="genres">Genres:</label>
-        <input type="text" id="genres_input" name="genres_input" placeholder="Type a genre...">
-        <select id="genres" name="genres">
+        <select id="genres_select" name="genres_select" multiple>
             {% for genre in genres%}
-                <option value="genre.genre_id"> {{ genre.name }} </option>
+                <option value={{genre.genre_id}}> {{ genre.name }} </option>
             {% endfor %}
         </select>
     </div>

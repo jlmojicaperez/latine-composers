@@ -10,7 +10,12 @@
     <ul class="genre-list">
         {% for genre in genres_list %}
             <li class="genre-item">
-                <a href="#" class="genre-link">{{genre.name}}</a>
+                <span class="genre-details-span"><a href="{{ url_for('genre_details', genre_id = genre.genre_id) }}" class="genre-link">{{genre.name}}</a></span>
+                <span class="delete-genre-span">
+                    <form action="{{ url_for('delete_genre', genre_id = genre.genre_id) }}" method="DELETE">
+                        <input type="submit" name="delete" value="delete" />
+                    </form>
+                </span>
             </li>
         {% endfor %}
     </ul>

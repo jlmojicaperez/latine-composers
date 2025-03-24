@@ -10,7 +10,7 @@
     <ul class="composer-list">
         {% for composer in composers_list %}
             <li class="composer-item">
-                <a href="{{ url_for('profile', composer_id=composer.composer_id) }}" class="composer-link">{{composer.name}}</a>
+                <a href="{{ url_for('composer_details', composer_id=composer.composer_id) }}" class="composer-link">{{composer.first_name}} {{composer.last_name}}</a>
             </li>
         {% endfor %}
     </ul>

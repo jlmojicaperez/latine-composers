@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+{% block head %}
+    <title> {{ genre.name }} | Latine Genres</title>
+{% endblock %}
+{%block body%}
+
+    <div class="details-card">
+        <h2>{{ genre.name }}</h2>
+        <div class="description">
+            <p class="section-title">Description</p>
+            <p>{{ genre.description }}</p>
+        </div>
+
+        <div class="composers">
+            <p class="section-title">Composers in this Genre</p>
+            <ul>
+                {% for composer in genre.composers %}
+                    <li><a href="{{ url_for('composer_details', composer_id=composer.composer_id) }}">{{ composer.first_name }} {{ composer.last_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

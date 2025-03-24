@@ -1,12 +1,12 @@
 {% extends 'base.html'%}
 {% block head %}
-    <title> {{ composer.name }} | Latine Composers</title>
+    <title> {{ composer.first_name }} {{ composer.last_name }} | Latine Composers</title>
 {% endblock %}
 {%block body%}
 
     <div class="profile-card">
         <img src="{{ url_for('static', filename=composer.image) }}" alt="{{ composer.name }} Photo">
-        <h2>{{ composer.name }}</h2>
+        <h2>{{ composer.first_name }} {{composer.last_name}}</h2>
         <div class="details">
             <p class="section-title">Details</p>
             <p><strong>Country of Birth:</strong> {{ composer.country_of_birth }}</p>
@@ -17,10 +17,10 @@
             <p><strong>Country of Education:</strong> {{ composer.country_of_education }}</p>
         </div>
 
-        <div class="genres">
-            <p class="section-title">Genres</p>
-            {% for genre in composer.genres %}
-            <span class="genre">{{ genre }}</span>
+        <div class="tags">
+            <p class="section-title">Tags</p>
+            {% for tag in composer.tags %}
+            <span class="tag"><a href="{{url_for('tag_details', tag_id=tag.tag_id)}}">{{ tag.name }}</a></span>
             {% endfor %}
         </div>
 
