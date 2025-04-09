@@ -52,10 +52,9 @@ class ComposerModel(db.Model):
     gender_id = db.Column(db.Integer, db.ForeignKey("gender.gender_id"))
     gender = db.relationship("GenderModel", foreign_keys=[gender_id], backref="composers")
     country_of_education_id = db.Column(db.Integer, db.ForeignKey("country.country_id"))
-    country_of_education = db.relationship("CountryModel", foreign_keys=[country_of_birth_id], backref="composers_educated")
+    country_of_education = db.relationship("CountryModel", foreign_keys=[country_of_education_id], backref="composers_educated")
     sample_url = db.Column(db.String(200), unique=False, nullable=True)
     sample_title = db.Column(db.String(100), unique=False, nullable=True)
     website = db.Column(db.String(100), unique=False, nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=True)
     more_info = db.Column(db.String(100), unique=False, nullable=True)
-        
