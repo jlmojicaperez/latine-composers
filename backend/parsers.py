@@ -14,6 +14,7 @@ composer_args.add_argument("sample_title", type=str, required=False)
 composer_args.add_argument("email", type=str, required=False)
 composer_args.add_argument("website", type=str, required=False)
 composer_args.add_argument("more_info", type=str, required=False)
+composer_args.add_argument("tag_ids", type=int, action="append", required=False)
 
 composer_update_args = reqparse.RequestParser()
 composer_update_args.add_argument("first_name", type=str, required=False)
