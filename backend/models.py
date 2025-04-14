@@ -1,6 +1,5 @@
 from config import db
 
-
 class CountryModel(db.Model):
     __tablename__ = "country"
 
