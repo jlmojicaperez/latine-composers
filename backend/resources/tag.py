@@ -37,7 +37,6 @@ class TagResource(Resource):
         tag = TagModel.query.filter_by(tag_id=id).first()
         if not tag:
             abort(404, message=f"Tag with ID {id} not found")
-        print(tag.composers)
         return tag
 
     @marshal_with(tag_fields)
