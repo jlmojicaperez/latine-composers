@@ -1,7 +1,7 @@
 
 from flask_restful import Resource, marshal_with, abort
 from parsers import composer_args, composer_update_args
-from models import ComposerModel, TagModel, CountryModel, GenderModel
+from models import ComposerModel, CountryModel, GenderModel, TagModel
 from serializers import composer_fields, composers_fields
 from flask import request
 from config import db
@@ -70,6 +70,13 @@ class ComposersResource(Resource):
         return new_composer, 201
 
 class ComposerResource(Resource):
+    @marshal_with(composer_fields)
+    def get(self, id):
+        composer = ComposerModel.query.filter_by(composer_id=id).first()
+        if not composer:
+            abort(404, message=f"Composer with ID {id} not found")
+        return composer
+
     @marshal_with(composer_fields)
     def patch(self, id):
         try:
