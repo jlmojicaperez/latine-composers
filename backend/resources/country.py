@@ -35,7 +35,7 @@ class CountryResource(Resource):
         country = CountryModel.query.filter_by(country_id=id).first()
         if not country:
             abort(404, message=f"Country with ID {id} not found")
-        return country.composers_educated
+        return country
 
     @marshal_with(country_fields)
     def patch(self, id):
