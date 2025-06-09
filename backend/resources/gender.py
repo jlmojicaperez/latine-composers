@@ -32,10 +32,17 @@ class GendersResource(Resource):
 
 class GenderResource(Resource):
     @marshal_with(gender_fields)
+    def get(self, id):
+        gender = GenderModel.query.filter_by(gender_id=id).first()
+        if not gender:
+            abort(404, message=f"Gender with ID {id} not found")
+        return gender
+
+    @marshal_with(gender_fields)
     def patch(self, id):
         gender = GenderModel.query.filter_by(gender_id=id).first()
         if not gender:
-            abort(404, message=f"gender with ID {id} not found")
+            abort(404, message=f"Gender with ID {id} not found")
 
         args = gender_args.parse_args()
 
@@ -51,7 +58,7 @@ class GenderResource(Resource):
     def delete(self, id):
         gender = GenderModel.query.filter_by(gender_id=id).first()
         if not gender:
-            abort(404, message=f"gender with ID {id} not found")
+            abort(404, message=f"Gender with ID {id} not found")
         db.session.delete(gender)
         db.session.commit()
         return "", 204
