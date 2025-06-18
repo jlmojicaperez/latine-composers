@@ -1,7 +1,7 @@
 
 from flask_restful import Resource, marshal_with, abort
 from parsers import composer_args, composer_update_args
-from models import ComposerModel, CountryModel, GenderModel, TagModel
+from models import ComposerModel, CountryModel, GenderModel, TagModel, ImageModel
 from serializers import composer_fields, composers_fields
 from flask import request
 from config import db
@@ -46,12 +46,16 @@ class ComposersResource(Resource):
             if not tag:
                 abort(404, message=f"Tag with ID {id} not found")
             tags.append(tag)
-
+        
+        image = None
+        if "image_id" in raw_data:
+            image = ImageModel.query.filter_by(image_id=args["image_id"]).first()
+            if not image:
+                abort(404, message=f"Image with ID {args["image_id"]} not found")
 
         new_composer = ComposerModel(
                 first_name=args["first_name"],
                 last_name=args["last_name"],
-                image_url=args.get("image_url"),
                 birth_date=args.get("birth_date"),
                 death_date=args.get("death_date"),
                 sample_url=args.get("sample_url"),
@@ -59,6 +63,7 @@ class ComposersResource(Resource):
                 website=args.get("website"),
                 email=args.get("email"),
                 more_info=args.get("more_info"),
+                image=image,
                 gender=gender,
                 country_of_birth=country_of_birth,
                 country_of_education=country_of_education,

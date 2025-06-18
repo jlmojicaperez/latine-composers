@@ -1,5 +1,10 @@
 from config import db
 
+class ImageModel(db.Model):
+    __tablename__ = "image"
+    image_id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(200), unique=True, nullable=False)
+
 class CountryModel(db.Model):
     __tablename__ = "country"
 
@@ -42,7 +47,8 @@ class ComposerModel(db.Model):
     composer_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(200), unique=False, nullable=False)
     last_name = db.Column(db.String(200), unique=False, nullable=False)
-    image_url = db.Column(db.String(300), unique=True, nullable=True)
+    image_id = db.Column(db.Integer, db.ForeignKey("image.image_id"))
+    image = db.relationship("ImageModel", foreign_keys=[image_id], backref="composer")
     country_of_birth_id = db.Column(db.Integer, db.ForeignKey("country.country_id"))
     country_of_birth = db.relationship("CountryModel", foreign_keys=[country_of_birth_id], backref="composers_born")
     ethnicity = db.Column(db.String(50), unique=False, nullable=True)
