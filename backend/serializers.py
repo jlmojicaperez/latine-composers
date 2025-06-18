@@ -60,3 +60,7 @@ gender_fields = {
     "composers": fields.List(fields.Nested(composers_fields))
 }
 
+image_fields = {
+    "image_id": fields.Integer,
+    "url": fields.String,
+}

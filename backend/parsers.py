@@ -1,4 +1,6 @@
 from flask_restful import reqparse, inputs
+import werkzeug
+import werkzeug.datastructures
 
 composer_args = reqparse.RequestParser()
 composer_args.add_argument("first_name", type=str, required=True, help="First name cannot be blank")
@@ -44,3 +46,6 @@ country_args.add_argument("name", type=str, required=True, help="Name cannot be 
 
 gender_args = reqparse.RequestParser()
 gender_args.add_argument("name", type=str, required=True, help="Name cannot be blank")
+
+image_args = reqparse.RequestParser()
+image_args.add_argument("image_file", type=werkzeug.datastructures.FileStorage, location= "files", required=True, help="An image file is required")
