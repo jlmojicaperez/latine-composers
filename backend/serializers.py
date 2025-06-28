@@ -10,6 +10,16 @@ genders_fields = {
     "name": fields.String,
 }
 
+ethnicities_fields = {
+    "ethnicity_id": fields.Integer,
+    "name": fields.String,
+}
+
+instruments_fields = {
+    "instrument_id": fields.Integer,
+    "name": fields.String,
+}
+
 tags_fields = {
     "tag_id": fields.Integer,
     "name": fields.String,
@@ -55,8 +65,12 @@ tag_fields = {
 country_fields = {
     "country_id": fields.Integer,
     "name": fields.String,
-    "composers_born": fields.List(cls_or_instance=fields.Nested(composers_fields)),
-    "composers_educated": fields.List(cls_or_instance=fields.Nested(composers_fields))
+    "composers_born": fields.List(
+        cls_or_instance=fields.Nested(composers_fields)
+    ),
+    "composers_educated": fields.List(
+        cls_or_instance=fields.Nested(composers_fields)
+    )
 }
 
 gender_fields = {
@@ -65,3 +79,14 @@ gender_fields = {
     "composers": fields.List(fields.Nested(composers_fields))
 }
 
+ethnicity_fields = {
+    "ethnicity_id": fields.Integer,
+    "name": fields.String,
+    "composers": fields.List(fields.Nested(composers_fields))
+}
+
+instrument_fields = {
+    "instrument_id": fields.Integer,
+    "name": fields.String,
+    # Add nested field for pieces later
+}
