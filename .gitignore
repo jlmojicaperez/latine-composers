@@ -173,5 +173,8 @@ cython_debug/
 # sqlite
 instance/
 
+# static files
+static/
+
 # Todo list
 todo.md

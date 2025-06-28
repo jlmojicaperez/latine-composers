@@ -1,5 +1,6 @@
 from config import api, app, db
 from resources.tag import TagResource, TagsResource
+from resources.image import ImageResource, ImagesResource
 from resources.gender import GenderResource, GendersResource
 from resources.country import CountryResource, CountriesResource
 from resources.composer import ComposerResource, ComposersResource
@@ -13,6 +14,8 @@ api.add_resource(GendersResource, "/api/genders")
 api.add_resource(GenderResource, "/api/genders/<int:id>")
 api.add_resource(TagsResource, "/api/tags")
 api.add_resource(TagResource, "/api/tags/<int:id>")
+api.add_resource(ImagesResource, "/api/images")
+api.add_resource(ImageResource, "/api/images/<int:id>")
 
 if __name__ == "__main__":
     with app.app_context():

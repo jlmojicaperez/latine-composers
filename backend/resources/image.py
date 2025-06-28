@@ -19,11 +19,11 @@ class ImagesResource(Resource):
     @marshal_with(image_fields)
     def post(self):
         args = image_args.parse_args()
-        image_file = args["file"] 
+        image_file = args["image_file"] 
         image_filename = secure_filename(image_file.filename)
         if not allowed_file(image_filename):
             abort(400, "Image must be in one of the following formats: jpg, jpeg, png or gif")
-        image_url = os.path.join(os.path.join(app["UPLOAD_FOLDER"], image_filename))
+        image_url = os.path.join(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
         image_file.save(image_url)
         new_image = ImageModel(
             url=image_url
@@ -41,7 +41,7 @@ class ImageResource(Resource):
     def get(self, id):
         image = ImageModel.query.filter_by(image_id=id).first()
         if not image:
-            abort(404, message=f"image with ID {id} not found")
+            abort(404, message=f"Image with ID {id} not found")
         return image
 
     @marshal_with(image_fields)
@@ -51,11 +51,11 @@ class ImageResource(Resource):
             abort(404, message=f"Image with ID {id} not found")
 
         args = image_args.parse_args()
-        new_image_file = args["file"] 
+        new_image_file = args["image_file"] 
         new_image_filename = secure_filename(new_image_file.filename)
         if not allowed_file(new_image_filename):
             abort(400, "Image must be in one of the following formats: jpg, jpeg, png or gif")
-        new_image_url = os.path.join(os.path.join(app["UPLOAD_FOLDER"], new_image_filename))
+        new_image_url = os.path.join(os.path.join(app.config["UPLOAD_FOLDER"], new_image_filename))
         new_image_file.save(new_image_url)
         try:
             os.remove(image.url)
@@ -70,7 +70,7 @@ class ImageResource(Resource):
         image = ImageModel.query.filter_by(image_id=id).first()
         if not image:
             abort(404, message=f"Image with ID {id} not found")
-        os.remove(image.url)
         db.session.delete(image)
         db.session.commit()
+        os.remove(image.url)
         return "", 204

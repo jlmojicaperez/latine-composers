@@ -15,18 +15,23 @@ tags_fields = {
     "name": fields.String,
 }
 
+image_fields = {
+    "image_id": fields.Integer,
+    "url": fields.String,
+}
+
 composers_fields = {
     "composer_id": fields.Integer,
     "first_name": fields.String,
     "last_name": fields.String,
-    "image_url": fields.String,
+    "image": fields.Nested(image_fields),
 }
 
 composer_fields = {
     "composer_id": fields.Integer,
     "first_name": fields.String,
     "last_name": fields.String,
-    "image_url": fields.String,
+    "image": fields.Nested(image_fields),
     "birth_date": fields.DateTime(dt_format="iso8601"),
     "death_date": fields.DateTime(dt_format="iso8601"),
     "country_of_birth": fields.Nested(countries_fields),
@@ -60,7 +65,3 @@ gender_fields = {
     "composers": fields.List(fields.Nested(composers_fields))
 }
 
-image_fields = {
-    "image_id": fields.Integer,
-    "url": fields.String,
-}
