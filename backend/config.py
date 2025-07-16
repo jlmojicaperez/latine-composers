@@ -5,10 +5,10 @@ from flask_restful import Api
 import os
 
 
-UPLOAD_FOLDER = os.path.join("static", "images")
+UPLOAD_FOLDER = os.path.join("static/images")
 IMAGE_ALLOWED_EXTENSIONS = {"jpg", "jpeg", "gif", "png"}
 SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
-MAX_CONTENT_SIZE= 25 * 1000 * 1000 # 25 Megabytes
+MAX_CONTENT_SIZE = 25 * 1000 * 1000  # 25 Megabytes
 
 app = Flask(__name__)
 CORS(app)

@@ -1,15 +1,6 @@
 from config import db
 
 
-class InstrumentModel(db.Model):
-    __tablename__ = "instrument"
-    instrument_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), unique=True, nullable=False)
-
-    def __repr__(self):
-        return self.name
-
-
 class EthnicityModel(db.Model):
     __tablename__ = "ethnicity"
     ethnicity_id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +31,64 @@ class GenderModel(db.Model):
 
     gender_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80),  unique=True, nullable=False)
+
+    def __repr__(self):
+        return self.name
+
+
+class PieceTypeModel(db.Model):
+    __tablename__ = "piece_type"
+
+    piece_type_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100),  unique=True, nullable=False)
+
+    def __repr__(self):
+        return self.name
+
+
+instrument_piece_association = db.Table(
+    'instrument_piece_association',
+    db.Column('piece_id', db.Integer, db.ForeignKey(
+        'piece.piece_id'), primary_key=True),
+    db.Column('instrument_id', db.Integer, db.ForeignKey(
+        'instrument.instrument_id'), primary_key=True),
+    db.Column("instrument_count", db.Integer,
+              primary_key=False, nullable=False)
+)
+
+
+class InstrumentModel(db.Model):
+    __tablename__ = "instrument"
+    instrument_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), unique=True, nullable=False)
+
+    def __repr__(self):
+        return self.name
+
+
+composer_piece_association = db.Table(
+    'composer_piece_association',
+    db.Column('piece_id', db.Integer, db.ForeignKey(
+        'piece.piece_id'), primary_key=True),
+    db.Column('composer_id', db.Integer, db.ForeignKey(
+        'composer.composer_id'), primary_key=True)
+)
+
+
+class PieceModel(db.Model):
+    __tablename__ = "piece"
+
+    piece_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), unique=True, nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('piece_type.piece_type_id'))
+    type = db.relationship("PieceTypeModel", foreign_keys=[
+                           type_id], backref="pieces")
+    composers = db.relationship("ComposerModel",
+                                secondary=composer_piece_association,
+                                backref=db.backref("pieces", lazy="dynamic"))
+    instrumentation = db.relationship("InstrumentModel",
+                                      secondary=instrument_piece_association,
+                                      backref=db.backref("pieces", lazy="dynamic"))
 
     def __repr__(self):
         return self.name
