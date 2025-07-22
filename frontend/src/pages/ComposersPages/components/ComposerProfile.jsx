@@ -1,6 +1,5 @@
 
 export default function ComposerProfile({ composer }) {
-  console.log(composer)
   return <div>
     <h2>{composer.first_name} {composer.last_name}</h2>
     <img src={`http://localhost:8080/api/images/${composer.image.image_id}`} style={{ height: "128px" }} />
