@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import ComposerList from "./components/ComposerList";
 
-function ComposersPage() {
+function ComposersListPage() {
     const [composers, setComposers] = useState([]);
 
     async function fetchComposers() {
@@ -27,4 +27,4 @@ function ComposersPage() {
     );
 }
 
-export default ComposersPage
+export default ComposersListPage
