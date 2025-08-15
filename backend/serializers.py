@@ -42,6 +42,7 @@ composer_fields = {
     "first_name": fields.String,
     "last_name": fields.String,
     "image": fields.Nested(image_fields),
+    "ethnicity": fields.Nested(ethnicities_fields),
     "birth_date": fields.DateTime(dt_format="iso8601"),
     "death_date": fields.DateTime(dt_format="iso8601"),
     "country_of_birth": fields.Nested(countries_fields),

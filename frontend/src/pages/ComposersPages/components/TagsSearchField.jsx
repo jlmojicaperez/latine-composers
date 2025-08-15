@@ -12,10 +12,6 @@ export default function TagsSearchField({ addTag }) {
     setLoading(false)
   }
 
-  function updatesearch(chars) {
-    for (let index = 0; index < tags.length; index++) {
-    }
-  }
 
   useEffect(() => {
     fetchTags();

@@ -12,6 +12,7 @@ composer_args.add_argument(
 composer_args.add_argument(
     "death_date", type=inputs.datetime_from_iso8601, required=False)
 composer_args.add_argument("gender_id", type=int, required=False)
+composer_args.add_argument("ethnicity_id", type=int, required=False)
 composer_args.add_argument("country_of_birth_id", type=int,
                            required=True,
                            help="Country of birth ID cannot be blank")
@@ -33,6 +34,7 @@ composer_update_args.add_argument(
 composer_update_args.add_argument(
     "death_date", type=inputs.datetime_from_iso8601, required=False)
 composer_update_args.add_argument("gender_id", type=int, required=False)
+composer_update_args.add_argument("ethnicity_id", type=int, required=False)
 composer_update_args.add_argument(
     "country_of_birth_id", type=int, required=False)
 composer_update_args.add_argument(

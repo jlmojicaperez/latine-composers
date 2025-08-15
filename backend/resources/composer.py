@@ -1,7 +1,6 @@
-
 from flask_restful import Resource, marshal_with, abort
 from parsers import composer_args, composer_update_args
-from models import ComposerModel, CountryModel, GenderModel, TagModel, ImageModel
+from models import ComposerModel, CountryModel, GenderModel, TagModel, ImageModel, EthnicityModel
 from serializers import composer_fields, composers_fields
 from flask import request, url_for
 from config import db
@@ -135,6 +134,15 @@ class ComposerResource(Resource):
                       args["gender_id"]} not found")
             else:
                 composer.gender = gender
+
+        if "ethnicity_id" in raw_data:
+            ethnicity = EthnicityModel.query.filter_by(
+                ethnicity_id=args["ethnicity_id"]).first()
+            if not ethnicity:
+                abort(404, message=f"ethnicity with ID {
+                      args["ethnicity_id"]} not found")
+            else:
+                composer.ethnicity = ethnicity
 
         if "tag_ids" in raw_data:
             tags = []

@@ -4,6 +4,7 @@ from resources.image import ImageResource, ImagesResource
 from resources.gender import GenderResource, GendersResource
 from resources.country import CountryResource, CountriesResource
 from resources.composer import ComposerResource, ComposersResource
+from resources.ethnicity import EthnicityResource, EthnicitiesResource
 import os
 
 api.add_resource(ComposersResource, "/api/composers")
@@ -16,6 +17,8 @@ api.add_resource(TagsResource, "/api/tags")
 api.add_resource(TagResource, "/api/tags/<int:id>")
 api.add_resource(ImagesResource, "/api/images")
 api.add_resource(ImageResource, "/api/images/<int:id>")
+api.add_resource(EthnicitiesResource, "/api/ethnicities")
+api.add_resource(EthnicityResource, "/api/etnicities/<int:id>")
 
 if __name__ == "__main__":
     with app.app_context():
