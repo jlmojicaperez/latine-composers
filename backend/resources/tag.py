@@ -1,4 +1,3 @@
-
 from flask_restful import Resource, marshal_with, abort
 from parsers import tag_args, tag_update_args
 from models import TagModel
@@ -6,6 +5,7 @@ from serializers import tag_fields, tags_fields
 from sqlalchemy.exc import IntegrityError
 from flask import request
 from config import db
+
 
 class TagsResource(Resource):
     @marshal_with(tags_fields)
@@ -17,9 +17,9 @@ class TagsResource(Resource):
     def post(self):
         args = tag_args.parse_args()
         new_tag = TagModel(
-                name=args["name"],
-                description=args.get("description")
-                )
+            name=args["name"],
+            description=args.get("description")
+        )
         try:
             db.session.add(new_tag)
             db.session.commit()
@@ -29,12 +29,13 @@ class TagsResource(Resource):
             abort(409, message="Tag name already exists")
         except Exception as error:
             db.session.rollback()
-            abort(500, message="An unexpected error ocurred")
+            abort(500, message=f"An unexpected error ocurred:\n{error}")
+
 
 class TagResource(Resource):
     @marshal_with(tag_fields)
     def get(self, id):
-        tag = TagModel.query.filter_by(tag_id=id).first()
+        tag = TagModel.query.filter_by(id=id).first()
         if not tag:
             abort(404, message=f"Tag with ID {id} not found")
         return tag
@@ -47,9 +48,9 @@ class TagResource(Resource):
                 abort(400, message="Invalid. JSON body required for PATCH request.")
         except Exception as e:
             # Catch potential issues during JSON parsing
-             abort(400, message=f"Error parsing JSON body: {e}")
+            abort(400, message=f"Error parsing JSON body: {e}")
 
-        tag = TagModel.query.filter_by(tag_id=id).first()
+        tag = TagModel.query.filter_by(id=id).first()
         if not tag:
             abort(404, message=f"Tag with ID {id} not found")
 
@@ -68,7 +69,7 @@ class TagResource(Resource):
         return tag
 
     def delete(self, id):
-        tag = TagModel.query.filter_by(tag_id=id).first()
+        tag = TagModel.query.filter_by(id=id).first()
         if not tag:
             abort(404, message=f"Tag with ID {id} not found")
         db.session.delete(tag)

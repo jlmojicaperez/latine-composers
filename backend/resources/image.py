@@ -47,14 +47,14 @@ class ImagesResource(Resource):
 
 class ImageResource(Resource):
     def get(self, id):
-        image = ImageModel.query.filter_by(image_id=id).first()
+        image = ImageModel.query.filter_by(id=id).first()
         if not image:
             abort(404, message=f"Image with ID {id} not found")
         return send_file(image.url)
 
     @marshal_with(image_fields)
     def patch(self, id):
-        image = ImageModel.query.filter_by(image_id=id).first()
+        image = ImageModel.query.filter_by(id=id).first()
         if not image:
             abort(404, message=f"Image with ID {id} not found")
 
@@ -77,7 +77,7 @@ class ImageResource(Resource):
         return image
 
     def delete(self, id):
-        image = ImageModel.query.filter_by(image_id=id).first()
+        image = ImageModel.query.filter_by(id=id).first()
         if not image:
             abort(404, message=f"Image with ID {id} not found")
         db.session.delete(image)

@@ -33,14 +33,14 @@ class EthnicitiesResource(Resource):
 class EthnicityResource(Resource):
     @marshal_with(ethnicity_fields)
     def get(self, id):
-        ethnicity = EthnicityModel.query.filter_by(ethnicity_id=id).first()
+        ethnicity = EthnicityModel.query.filter_by(id=id).first()
         if not ethnicity:
             abort(404, message=f"ethnicity with ID {id} not found")
         return ethnicity
 
     @marshal_with(ethnicity_fields)
     def patch(self, id):
-        ethnicity = EthnicityModel.query.filter_by(ethnicity_id=id).first()
+        ethnicity = EthnicityModel.query.filter_by(id=id).first()
         if not ethnicity:
             abort(404, message=f"ethnicity with ID {id} not found")
 
@@ -56,7 +56,7 @@ class EthnicityResource(Resource):
         return ethnicity
 
     def delete(self, id):
-        ethnicity = EthnicityModel.query.filter_by(ethnicity_id=id).first()
+        ethnicity = EthnicityModel.query.filter_by(id=id).first()
         if not ethnicity:
             abort(404, message=f"ethnicity with ID {id} not found")
         db.session.delete(ethnicity)

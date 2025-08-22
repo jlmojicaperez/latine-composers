@@ -2,15 +2,22 @@ from flask_restful import Resource, marshal_with, abort
 from parsers import composer_args, composer_update_args
 from models import ComposerModel, CountryModel, GenderModel, TagModel, ImageModel, EthnicityModel
 from serializers import composer_fields, composers_fields
-from flask import request, url_for
+from flask import request
 from config import db
+
+
+def set_composer_data(composer, data_key, data_id, data_model, args):
+    data = data_model.query.filter_by(id=data_id).firtst()
+    if not data:
+        abort(404, message=f"{data_key} with ID {data_id} not found")
+    else:
+        setattr(composer, data_key, data)
 
 
 class ComposersResource(Resource):
     @marshal_with(composers_fields)
     def get(self):
         all_composers = ComposerModel.query.all()
-        print(url_for("imageresource", id=2))
         return all_composers
 
     @marshal_with(composer_fields)
@@ -24,6 +31,14 @@ class ComposersResource(Resource):
         except Exception as e:
             # Catch potential issues during JSON parsing
             abort(400, message=f"Error parsing JSON body: {e}")
+
+        new_composer = ComposerModel()
+        set_composer_data(new_composer,
+                          "country_of_birth",
+                          "country_of_birth_id",
+                          CountryModel,
+                          args)
+        abort(404)
 
         country_of_birth = CountryModel.query.filter_by(
             country_id=args["country_of_birth_id"]).first()
@@ -48,19 +63,21 @@ class ComposersResource(Resource):
                       args["gender_id"]} not found")
 
         tags = []
-        for id in args["tag_ids"]:
-            tag = TagModel.query.filter_by(tag_id=id).first()
+        for arg_tag in args["tags"]:
+            tag = TagModel.query.filter_by(tag_id=arg_tag["tag_id"]).first()
             if not tag:
-                abort(404, message=f"Tag with ID {id} not found")
-            tags.append(tag)
+                abort(404, message=f"Tag with ID {
+                    tag["tag_id"]} not found")
+            else:
+                tags.append(tag)
 
         image = None
-        if "image_id" in raw_data:
+        if "image" in raw_data:
             image = ImageModel.query.filter_by(
-                image_id=args["image_id"]).first()
+                image_id=args["image"]["image_id"]).first()
             if not image:
                 abort(404, message=f"Image with ID {
-                      args["image_id"]} not found")
+                      args["image"]["image_id"]} not found")
 
         new_composer = ComposerModel(
             first_name=args["first_name"],
@@ -87,7 +104,7 @@ class ComposersResource(Resource):
 class ComposerResource(Resource):
     @marshal_with(composer_fields)
     def get(self, id):
-        composer = ComposerModel.query.filter_by(composer_id=id).first()
+        composer = ComposerModel.query.filter_by(id=id).first()
         if not composer:
             abort(404, message=f"Composer with ID {id} not found")
         return composer
@@ -102,74 +119,76 @@ class ComposerResource(Resource):
             # Catch potential issues during JSON parsing
             abort(400, message=f"Error parsing JSON body: {e}")
 
-        composer = ComposerModel.query.filter_by(composer_id=id).first()
+        composer = ComposerModel.query.filter_by(id=id).first()
         if not composer:
             abort(404, message=f"Composer with ID {id} not found")
 
         args = composer_update_args.parse_args()
 
-        if "country_of_birth_id" in raw_data:
+        if "country_of_birth" in raw_data:
             country_of_birth = CountryModel.query.filter_by(
-                country_id=args["country_of_birth_id"]).first()
+                country_id=args["country_of_birth"]["country_id"]).first()
             if not country_of_birth:
                 abort(404, message=f"Country with ID {
-                    args["country_of_birth_id"]} not found")
+                    args["country_of_birth"]["country_id"]} not found")
             else:
                 composer.country_of_birth = country_of_birth
 
-        if "country_of_education_id" in raw_data:
+        if "country_of_education" in raw_data:
             country_of_education = CountryModel.query.filter_by(
-                country_id=args["country_of_education_id"]).first()
+                country_id=args["country_of_educationd"]["country_id"]).first()
             if not country_of_education:
                 abort(404, message=f"Country with ID {
-                      args["country_of_education_id"]} not found")
+                      args["country_of_education"]["country_id"]} not found")
             else:
                 composer.country_of_education = country_of_birth
 
-        if "gender_id" in raw_data:
+        if "gender" in raw_data:
             gender = GenderModel.query.filter_by(
-                gender_id=args["gender_id"]).first()
+                gender_id=args["gender"]["gender_id"]).first()
             if not gender:
                 abort(404, message=f"Gender with ID {
-                      args["gender_id"]} not found")
+                      args["gender"]["gender_id"]} not found")
             else:
                 composer.gender = gender
 
         if "ethnicity_id" in raw_data:
             ethnicity = EthnicityModel.query.filter_by(
-                ethnicity_id=args["ethnicity_id"]).first()
+                ethnicity_id=args["ethnicity"]["ethnicity_id"]).first()
             if not ethnicity:
                 abort(404, message=f"ethnicity with ID {
-                      args["ethnicity_id"]} not found")
+                      args["ethnicity"]["ethnicity_id"]} not found")
             else:
                 composer.ethnicity = ethnicity
 
-        if "tag_ids" in raw_data:
+        if "tags" in raw_data:
             tags = []
-            for id in args["tag_ids"]:
-                tag = TagModel.query.filter_by(tag_id=id).first()
+            for arg_tag in args["tags"]:
+                tag = TagModel.query.filter_by(
+                    tag_id=arg_tag["tag_id"]).first()
                 if not tag:
-                    abort(404, message=f"Tag with ID {id} not found")
+                    abort(404, message=f"Tag with ID {
+                          arg_tag["tag_id"]} not found")
                 else:
                     tags.append(tag)
             composer.tags = tags
 
-        if "image_id" in raw_data:
+        if "image" in raw_data:
             image = ImageModel.query.filter_by(
-                image_id=args["image_id"]).first()
+                image_id=args["image"]["image_id"]).first()
             if not image:
                 abort(404, message=f"Image with ID {
-                      args["image_id"]} not found")
+                      args["image"]["image_id"]} not found")
             else:
                 composer.image = image
 
         keys_to_skip = {
-            "country_of_birth_id",
-            "country_of_education_id",
-            "ethnicity_id",
-            "gender_id",
-            "image_id",
-            "tag_ids"
+            "country_of_birth",
+            "country_of_education",
+            "ethnicity",
+            "gender",
+            "image",
+            "tags"
         }
         for key, value in args.items():
             # Check if the key was present in the request JSON body
@@ -184,7 +203,7 @@ class ComposerResource(Resource):
         return composer
 
     def delete(self, id):
-        composer = ComposerModel.query.filter_by(composer_id=id).first()
+        composer = ComposerModel.query.filter_by(id=id).first()
         if not composer:
             abort(404, message=f"Composer with ID {id} not found")
         db.session.delete(composer)

@@ -6,6 +6,7 @@ from serializers import country_fields, countries_fields
 from sqlalchemy.exc import IntegrityError
 from config import db
 
+
 class CountriesResource(Resource):
     @marshal_with(countries_fields)
     def get(self):
@@ -16,8 +17,8 @@ class CountriesResource(Resource):
     def post(self):
         args = country_args.parse_args()
         new_country = CountryModel(
-                name=args["name"]
-                )
+            name=args["name"]
+        )
         try:
             db.session.add(new_country)
             db.session.commit()
@@ -29,17 +30,18 @@ class CountriesResource(Resource):
             db.session.rollback()
             abort(500, message="An unexpected error ocurred")
 
+
 class CountryResource(Resource):
     @marshal_with(country_fields)
     def get(self, id):
-        country = CountryModel.query.filter_by(country_id=id).first()
+        country = CountryModel.query.filter_by(id=id).first()
         if not country:
             abort(404, message=f"Country with ID {id} not found")
         return country
 
     @marshal_with(country_fields)
     def patch(self, id):
-        country = CountryModel.query.filter_by(country_id=id).first()
+        country = CountryModel.query.filter_by(id=id).first()
         if not country:
             abort(404, message=f"Country with ID {id} not found")
 
@@ -55,7 +57,7 @@ class CountryResource(Resource):
         return country
 
     def delete(self, id):
-        country = CountryModel.query.filter_by(country_id=id).first()
+        country = CountryModel.query.filter_by(id=id).first()
         if not country:
             abort(404, message=f"Country with ID {id} not found")
         db.session.delete(country)

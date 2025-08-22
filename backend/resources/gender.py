@@ -7,6 +7,7 @@ from serializers import gender_fields, genders_fields
 from sqlalchemy.exc import IntegrityError
 from config import db
 
+
 class GendersResource(Resource):
     @marshal_with(genders_fields)
     def get(self):
@@ -17,8 +18,8 @@ class GendersResource(Resource):
     def post(self):
         args = gender_args.parse_args()
         new_gender = GenderModel(
-                name=args["name"]
-                )
+            name=args["name"]
+        )
         try:
             db.session.add(new_gender)
             db.session.commit()
@@ -30,17 +31,18 @@ class GendersResource(Resource):
             db.session.rollback()
             abort(500, message="An unexpected error ocurred")
 
+
 class GenderResource(Resource):
     @marshal_with(gender_fields)
     def get(self, id):
-        gender = GenderModel.query.filter_by(gender_id=id).first()
+        gender = GenderModel.query.filter_by(id=id).first()
         if not gender:
             abort(404, message=f"Gender with ID {id} not found")
         return gender
 
     @marshal_with(gender_fields)
     def patch(self, id):
-        gender = GenderModel.query.filter_by(gender_id=id).first()
+        gender = GenderModel.query.filter_by(id=id).first()
         if not gender:
             abort(404, message=f"Gender with ID {id} not found")
 
@@ -56,7 +58,7 @@ class GenderResource(Resource):
         return gender
 
     def delete(self, id):
-        gender = GenderModel.query.filter_by(gender_id=id).first()
+        gender = GenderModel.query.filter_by(id=id).first()
         if not gender:
             abort(404, message=f"Gender with ID {id} not found")
         db.session.delete(gender)

@@ -33,14 +33,14 @@ class InstrumentsResource(Resource):
 class InstrumentResource(Resource):
     @marshal_with(instrument_fields)
     def get(self, id):
-        instrument = InstrumentModel.query.filter_by(instrument_id=id).first()
+        instrument = InstrumentModel.query.filter_by(id=id).first()
         if not instrument:
             abort(404, message=f"Instreument with ID {id} not found")
         return instrument
 
     @marshal_with(instrument_fields)
     def patch(self, id):
-        instrument = InstrumentModel.query.filter_by(instrument_id=id).first()
+        instrument = InstrumentModel.query.filter_by(id=id).first()
         if not instrument:
             abort(404, message=f"Instreument with ID {id} not found")
 
@@ -56,7 +56,7 @@ class InstrumentResource(Resource):
         return instrument
 
     def delete(self, id):
-        instrument = InstrumentModel.query.filter_by(instrument_id=id).first()
+        instrument = InstrumentModel.query.filter_by(id=id).first()
         if not instrument:
             abort(404, message=f"Instreument with ID {id} not found")
         db.session.delete(instrument)
